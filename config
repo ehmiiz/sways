@@ -6,6 +6,24 @@ exec_always {
     export XDG_CURRENT_DESKTOP=sway
     export XDG_SESSION_DESKTOP=sway
     export XDG_SESSION_TYPE=wayland
+    
+    # High-DPI and scaling fixes
+    export GDK_SCALE=2
+    export GDK_DPI_SCALE=0.5
+    export QT_AUTO_SCREEN_SCALE_FACTOR=1
+    export QT_SCALE_FACTOR=2
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+    export XCURSOR_SIZE=32
+    
+    # Force Wayland for supported applications
+    export MOZ_ENABLE_WAYLAND=1
+    export ELECTRON_OZONE_PLATFORM_HINT=wayland
+    
+    # XWayland scaling
+    export GDK_BACKEND=wayland,x11
+    export QT_QPA_PLATFORM=wayland;xcb
+    export SDL_VIDEODRIVER=wayland
+    export CLUTTER_BACKEND=wayland
 }
 
 ### Variables
@@ -15,7 +33,7 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-set $menu "rofi -show drun -show-icons -modi drun,run,window"
+set $menu "rofi -show drun -show-icons -modi drun,run,window -dpi 192"
 
 ### Appearance
 # Border colors (grey theme)
@@ -48,6 +66,11 @@ input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
 ### Output Configuration
 # Default wallpaper
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+
+# High-DPI scaling for Framework 13 display
+output "AU Optronics 0x1B9E Unknown" scale 2
+# Alternative naming for your display
+output "eDP-1" scale 2
 
 ### Status Bar
 bar {
@@ -175,3 +198,8 @@ bindsym $mod+Shift+i exec $term -e sh -c 'ls -la ~/Pictures/*.png 2>/dev/null ||
 
 ### System Includes
 include /etc/sway/config.d/*
+
+### High-DPI Scaling Configuration
+# Display scaling
+output eDP-1 scale 2
+output * scale 2

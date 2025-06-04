@@ -1,0 +1,105 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+My current sway setup:
+
+- Arch Linux
+- Sway
+- FishShell
+
+my packages:
+alacritty 0.15.1-1
+amd-ucode 20250508.788aadc8-2
+base 3-2
+base-devel 1-2
+bat 0.25.0-4
+brightnessctl 0.5.1-3
+dmenu 5.3-3
+efibootmgr 18-3
+fastfetch 2.44.0-1
+firefox 139.0.1-1
+fish 4.0.2-1
+flatpak 1:1.16.1-1
+fuse2 2.9.9-5
+fwupd 2.0.10-1
+fzf 0.62.0-1
+git 2.49.0-2
+grim 1.4.1-3
+grub 2:2.12.r292.g73d1c959-1
+htop 3.4.1-1
+imv 4.5.0-5
+iwd 3.8-1
+jq 1.7.1-2
+linux 6.14.9.arch1-1
+linux-firmware 20250508.788aadc8-2
+lsd 1.1.5-1
+ly 1.0.3-2
+man-db 2.13.1-1
+mesa-utils 9.0.0-6
+nano 8.4-1
+neovim 0.11.1-2
+openssh 10.0p1-3
+otf-font-awesome 6.7.2-1
+pavucontrol 1:6.1-1
+power-profiles-daemon 0.30-1
+powertop 2.15-2
+qjournalctl 0.6.4-1
+rofi 1.7.9.1-1
+sl 5.05-5
+slurp 1.5.0-1
+smartmontools 7.5-1
+sof-firmware 2025.01.1-1
+starship 1.23.0-1
+swappy 1.5.1-2
+sway 1:1.10.1-3
+swaylock 1.8.2-1
+terraform 1.12.1-1
+unzip 6.0-22
+vim 9.1.1376-1
+vulkan-radeon 1:25.1.1-2
+waybar 0.12.0-1
+wget 1.25.0-2
+wireless_tools 30.pre9-4
+wl-clipboard 1:2.2.1-2
+wlr-randr 0.5.0-1
+wpa_supplicant 2:2.11-3
+xdg-utils 1.2.1-1
+xf86-video-amdgpu 23.0.0-2
+xf86-video-ati 1:22.0.0-2
+xorg-server 21.1.16-1
+xorg-xinit 1.4.4-1
+xorg-xwayland 24.1.6-1
+zram-generator 1.2.1-1
+
+
+I use a Framework 13 (AMD 7860)
+
+OS: Arch Linux x86_64
+Host: Laptop 13 (AMD Ryzen 7040Series) (A7)
+Kernel: Linux 6.14.9-arch1-1
+Uptime: 6 hours, 43 mins
+Packages: 642 (pacman), 17 (flatpak)
+Shell: fish 4.0.2
+Display (NE135A1M-NY1): 2880x1920 @ 120 Hz (as 1440x960) in 14" [Built-in]
+WM: Sway 1.10.1 (Wayland)
+Cursor: Adwaita
+Terminal: alacritty 0.15.1
+Terminal Font: alacritty (13pt)
+CPU: AMD Ryzen 7 7840U (16) @ 5.13 GHz
+GPU: AMD Radeon 780M [Integrated]
+Memory: 4.99 GiB / 30.65 GiB (16%)
+Swap: 0 B / 4.00 GiB (0%)
+Disk (/): 12.10 GiB / 48.91 GiB (25%) - ext4
+Disk (/home): 2.13 GiB / 865.62 GiB (0%) - ext4
+Local IP (wlan0): 192.168.1.61/24
+Battery (Framewo): 15% [Charging, AC Connected]
+Locale: en_US.UTF-8
+
+read my config at [config](mdc:config) or at ~/.config/sway/config
+
+- I want to have a functional system with emphasis on reuse (if my OS crashes I want this repo as a backup)
+- I want to use Cursor IDE and Alacritty
+- I want my scaling to work very well (no low res scaling), should be as premium as a macbook
+
