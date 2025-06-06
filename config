@@ -33,7 +33,7 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-set $menu "rofi -show drun -show-icons -modi drun,run,window -dpi 192"
+set $menu wmenu-run
 
 ### Appearance
 # Border colors (grey theme)
@@ -63,14 +63,42 @@ input "2362:628:PIXA3854:00_093A:0274_Touchpad" {
     tap_button_map lrm
 }
 
+# Mouse sensitivity configuration (reduce by 50%)
+input "2821:6802:ASUSTeK_ROG_HARPE_ACE_AIM_LAB_EDITION" {
+    pointer_accel -0.5
+}
+
 ### Output Configuration
 # Default wallpaper
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
-# High-DPI scaling for Framework 13 display
+# Dell U2724D 27" Monitor Configuration (Primary when connected)
+output "DP-9" {
+    mode 2560x1440@120Hz
+    scale 1
+    position 0,0
+}
+
+# Framework 13 laptop display configuration
+output "eDP-1" {
+    mode 2880x1920@120Hz
+    scale 2
+    position 0,0
+}
+
+# High-DPI scaling for any other displays
 output "AU Optronics 0x1B9E Unknown" scale 2
-# Alternative naming for your display
-output "eDP-1" scale 2
+
+# Monitor management: Disable laptop screen when external monitor is connected
+exec_always {
+    # Check if external monitor is connected and manage displays accordingly
+    if swaymsg -t get_outputs | jq -e '.[] | select(.name == "DP-9" and .active == true)' > /dev/null 2>&1; then
+        swaymsg output eDP-1 disable
+        swaymsg output DP-9 enable
+    else
+        swaymsg output eDP-1 enable
+    fi
+}
 
 ### Status Bar
 bar {
@@ -198,8 +226,3 @@ bindsym $mod+Shift+i exec $term -e sh -c 'ls -la ~/Pictures/*.png 2>/dev/null ||
 
 ### System Includes
 include /etc/sway/config.d/*
-
-### High-DPI Scaling Configuration
-# Display scaling
-output eDP-1 scale 2
-output * scale 2

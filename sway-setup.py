@@ -8,6 +8,8 @@ Run this script on a new Arch Linux system to set up the complete workflow.
 import subprocess
 import sys
 from pathlib import Path
+import shutil
+from datetime import datetime
 
 
 def run_command(command, check=True):
@@ -68,6 +70,34 @@ def create_directories():
         directory.mkdir(parents=True, exist_ok=True)
 
 
+def install_sway_config():
+    """Install sway config from repository to ~/.config/sway/config with backup."""
+    print("⚙️  Installing sway configuration...")
+    
+    # Get the script's directory (should be the repo root)
+    script_dir = Path(__file__).parent
+    repo_config = script_dir / 'config'
+    target_config = Path.home() / '.config' / 'sway' / 'config'
+    
+    # Check if the repo config exists
+    if not repo_config.exists():
+        print(f"❌ Config file not found at {repo_config}")
+        print("Make sure you're running this script from the repository directory")
+        sys.exit(1)
+    
+    # Backup existing config if it exists
+    if target_config.exists():
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = target_config.with_suffix(f'.backup_{timestamp}')
+        print(f"📄 Backing up existing config to {backup_path}")
+        shutil.copy2(target_config, backup_path)
+    
+    # Copy the repo config to the target location
+    print(f"📄 Copying config from {repo_config} to {target_config}")
+    shutil.copy2(repo_config, target_config)
+    print("✅ Sway config installed successfully!")
+
+
 def create_swappy_config():
     """Create swappy configuration file."""
     print("📁 Creating swappy configuration...")
@@ -93,15 +123,17 @@ def print_completion_info():
     print("✅ Setup complete!")
     print("")
     print("📋 Next steps:")
-    print("1. Copy your sway config to ~/.config/sway/config")
-    print("2. Run 'sway' to start")
+    print("1. ✅ Sway config has been installed to ~/.config/sway/config")
+    print("2. Run 'sway' to start (or logout and select Sway from your display manager)")
+    print("3. Your Dell U2724D monitor will be primary when connected")
+    print("4. Mouse sensitivity has been reduced by 50%")
     print("")
     print("Available commands:")
     print("  • Print Key: Full screenshot to ~/Pictures/")
     print("  • Super+Print: Area selection to ~/Pictures/")
     print("  • Ctrl+Shift+b: Area selection → edit in swappy")
     print("  • Ctrl+Print: Full screenshot to clipboard")
-    print("  • imv ~/Pictures/*.png: View screenshots")
+    print("  • Super+i: View screenshots with imv")
     print("")
     print("🎨 Your grey-themed Sway setup is ready!")
 
@@ -113,6 +145,7 @@ def main():
     try:
         install_packages()
         create_directories()
+        install_sway_config()
         create_swappy_config()
         print_completion_info()
     except KeyboardInterrupt:
