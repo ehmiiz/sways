@@ -93,7 +93,7 @@ output "AU Optronics 0x1B9E Unknown" scale 2
 exec_always {
     # Check if external monitor is connected and manage displays accordingly
     if swaymsg -t get_outputs | jq -e '.[] | select(.name == "DP-9" and .active == true)' > /dev/null 2>&1; then
-        swaymsg output eDP-1 disable
+        swaymsg output eDP-1 enable
         swaymsg output DP-9 enable
     else
         swaymsg output eDP-1 enable
@@ -103,7 +103,7 @@ exec_always {
 ### Status Bar
 bar {
     position top
-    status_command python ~/git/py/bar.py
+    status_command python ~/git/sway-stuff/bar.py
     
     colors {
         statusline #a7a7a8
@@ -176,7 +176,7 @@ bindsym $mod+b splith
 bindsym $mod+v splitv
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+e layout toggle split
 bindsym $mod+f fullscreen
 
 # Floating controls
@@ -187,6 +187,9 @@ bindsym $mod+a focus parent
 # Scratchpad
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
+
+# Nautilus on ctrl + e
+bindsym $mod+e exec nautilus
 
 # Resize mode
 mode "resize" {
@@ -223,6 +226,10 @@ bindsym Ctrl+Print exec grim - | wl-copy
 # Image viewer shortcuts
 bindsym $mod+i exec imv ~/Pictures/
 bindsym $mod+Shift+i exec $term -e sh -c 'ls -la ~/Pictures/*.png 2>/dev/null || echo "No screenshots found in ~/Pictures/"; read -p "Press Enter to continue..."'
+
+### Idle Management
+# Start swayidle with proper instance management
+exec_always ~/git/sway-stuff/start_swayidle.sh
 
 ### System Includes
 include /etc/sway/config.d/*

@@ -41,7 +41,7 @@ def install_packages():
     packages = [
         'sway',
         'alacritty', 
-        'rofi',
+        'dmenu',
         'grim',
         'slurp',
         'wl-clipboard',

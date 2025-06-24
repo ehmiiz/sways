@@ -1,5 +1,5 @@
 from datetime import datetime
-from psutil import disk_usage, sensors_battery
+from psutil import disk_usage, sensors_battery, virtual_memory
 from psutil._common import bytes2human
 from socket import gethostname, gethostbyname
 from subprocess import check_output, CalledProcessError
@@ -27,8 +27,23 @@ def get_volume():
     except (CalledProcessError, IndexError):
         return "N/A"
 
+def get_vpn_status():
+    try:
+        # Check if the VPN connection is active using nmcli
+        output = check_output("nmcli con show --active", shell=True).decode("utf-8")
+        if "integrity2-SE" in output:
+            return "Up"
+        else:
+            return "Down"
+    except CalledProcessError:
+        return "N/A"
+
 def refresh():
-    disk = bytes2human(disk_usage('/home').free)
+    home_disk = bytes2human(disk_usage('/home').free)
+    root_disk = bytes2human(disk_usage('/').free)
+    memory = virtual_memory()
+    memory_used = bytes2human(memory.used)
+    memory_total = bytes2human(memory.total)
     ip = gethostbyname(gethostname())
     try:
         ssid = check_output("iwgetid -r", shell=True).strip().decode("utf-8")
@@ -38,9 +53,10 @@ def refresh():
     battery = int(sensors_battery().percent)
     status = "Charging" if sensors_battery().power_plugged else "Discharging"
     volume = get_volume()
+    vpn_status = get_vpn_status()
     date = datetime.now().strftime('%h %d %A %H:%M')
-    format = "Space: %s | Internet: %s %s | Volume: %s | Battery: %s%% %s | Date: %s"
-    write(format % (disk, ip, ssid, volume, battery, status, date))
+    format = "Home: %s | Root: %s | Ram: %s/%s | IP: %s %s | Vol: %s | VPN: %s | Bat: %s%% %s | Date: %s"
+    write(format % (home_disk, root_disk, memory_used, memory_total, ip, ssid, volume, vpn_status, battery, status, date))
 
 while True:
     refresh()
