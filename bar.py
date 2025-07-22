@@ -6,6 +6,17 @@ from subprocess import check_output, CalledProcessError
 from sys import stdout
 from time import sleep
 
+# Casio-style weekday mapping
+WEEKDAYS = {
+    'Mon': 'MO',
+    'Tue': 'TU',
+    'Wed': 'WE',
+    'Thu': 'TH',
+    'Fri': 'FR',
+    'Sat': 'SA',
+    'Sun': 'SU'
+}
+
 def write(data):
     stdout.write('%s\n' % data)
     stdout.flush()
@@ -54,9 +65,13 @@ def refresh():
     status = "Charging" if sensors_battery().power_plugged else "Discharging"
     volume = get_volume()
     vpn_status = get_vpn_status()
-    date = datetime.now().strftime('%h %d %A %H:%M')
-    format = "Home: %s | Root: %s | Ram: %s/%s | IP: %s %s | Vol: %s | VPN: %s | Bat: %s%% %s | Date: %s"
-    write(format % (home_disk, root_disk, memory_used, memory_total, ip, ssid, volume, vpn_status, battery, status, date))
+    now = datetime.now()
+    weekday = WEEKDAYS[now.strftime('%a')]
+    day = now.strftime('%d')
+    time_str = now.strftime('%H:%M:%S')
+    casio_time = f"{weekday} {day} {time_str}"
+    format = "🏠 %s 💾 %s 🧠 %s/%s 🌐 %s %s 🔊 %s 🛡️ %s 🔋 %s%% %s ⌚ %s"
+    write(format % (home_disk, root_disk, memory_used, memory_total, ip, ssid, volume, vpn_status, battery, status, casio_time))
 
 while True:
     refresh()

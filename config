@@ -233,3 +233,11 @@ exec_always ~/git/sway-stuff/start_swayidle.sh
 
 ### System Includes
 include /etc/sway/config.d/*
+
+## Tap n stuff
+input type:touchpad {
+    tap enabled
+    drag enabled
+    drag_lock disabled
+}
+
