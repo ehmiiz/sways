@@ -38,8 +38,8 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-## This solves the issue with wmenu not finding cursor
-set $menu env PATH="$HOME/.local/bin:$PATH" wmenu-run
+## This solves the issue with wmenu not finding cursor and scaling issues
+set $menu env PATH="$HOME/.local/bin:$PATH" GDK_SCALE=2 QT_SCALE_FACTOR=2 ELECTRON_OZONE_PLATFORM_HINT=wayland wmenu-run
 
 ### Appearance
 # Border colors (grey theme)
