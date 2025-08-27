@@ -37,9 +37,28 @@ install_deps() {
     fi
 }
 
-# Install Cursor
+# Determine if Cursor is installed
+is_cursor_installed() {
+    if command -v cursor >/dev/null 2>&1; then
+        return 0
+    fi
+
+    # Fall back to checking common install locations created by installers
+    [[ -x "$HOME/.local/bin/cursor" ]] && return 0
+    [[ -f "$HOME/.local/share/applications/cursor.desktop" ]] && return 0
+    return 1
+}
+
+# Install Cursor (fresh install)
 install_cursor() {
-    log "Installing Cursor..."
+    log "Installing Cursor (fresh install)..."
+    curl -fsSL https://raw.githubusercontent.com/watzon/cursor-linux-installer/main/install.sh | bash
+}
+
+# Update Cursor to the latest AppImage
+update_cursor() {
+    # Re-running the upstream installer is idempotent and fetches the latest release
+    log "Updating Cursor to the latest AppImage..."
     curl -fsSL https://raw.githubusercontent.com/watzon/cursor-linux-installer/main/install.sh | bash
 }
 
@@ -172,24 +191,47 @@ cursor "$@"
 EOF
         chmod +x "$HOME/.local/bin/code"
         
-        # Add to PATH in fish config if needed
-        if command -v fish >/dev/null && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-            mkdir -p "$HOME/.config/fish"
-            echo "set -gx PATH ~/.local/bin \$PATH" >> "$HOME/.config/fish/config.fish"
-            log "Added ~/.local/bin to fish PATH"
+        # Add to PATH in bash config if needed
+        if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+            local bash_config=""
+            
+            # Determine which bash config file to use
+            if [[ -f "$HOME/.bashrc" ]]; then
+                bash_config="$HOME/.bashrc"
+            elif [[ -f "$HOME/.bash_profile" ]]; then
+                bash_config="$HOME/.bash_profile"
+            else
+                bash_config="$HOME/.bashrc"
+                touch "$bash_config"
+            fi
+            
+            # Add PATH export if not already present
+            if ! grep -q "export PATH=.*\.local/bin" "$bash_config"; then
+                echo "" >> "$bash_config"
+                echo "# Add ~/.local/bin to PATH for local binaries" >> "$bash_config"
+                echo "export PATH=\"\$HOME/.local/bin:\$PATH\"" >> "$bash_config"
+                log "Added ~/.local/bin to bash PATH in $bash_config"
+                warn "Please run 'source $bash_config' or restart your terminal"
+            fi
         fi
     fi
 }
 
 main() {
-    log "Cursor installer for Sway WM with dmenu/rofi integration"
-    
+    log "Cursor installer/updater for Sway WM with wmenu integration"
+
     install_deps
-    install_cursor
+
+    if is_cursor_installed; then
+        update_cursor
+    else
+        install_cursor
+    fi
+
     fix_sway_integration
-    
-    log "Installation complete! Cursor should now:"
-    log "  - Appear in dmenu/rofi application lists"
+
+    log "All done! Cursor should now:"
+    log "  - Appear in wmenu/wofi/bemenu and other launchers"
     log "  - Display proper icon in launchers"
     log "  - Run with Wayland optimizations"
     log "  - Be available as 'code' command"

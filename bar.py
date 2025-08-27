@@ -42,7 +42,7 @@ def get_vpn_status():
     try:
         # Check if the VPN connection is active using nmcli
         output = check_output("nmcli con show --active", shell=True).decode("utf-8")
-        if "integrity2-SE" in output:
+        if "mullvad" in output.lower() or "wg" in output.lower():
             return "Up"
         else:
             return "Down"

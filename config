@@ -6,6 +6,11 @@ exec_always {
     export XDG_CURRENT_DESKTOP=sway
     export XDG_SESSION_DESKTOP=sway
     export XDG_SESSION_TYPE=wayland
+    export XDG_DESKTOP_PORTAL_DIR=/usr/share/xdg-desktop-portal
+    export XDG_DESKTOP_PORTAL_IMPL=wlr
+    
+    # PATH configuration
+    export PATH="$HOME/.local/bin:$PATH"
     
     # High-DPI and scaling fixes
     export GDK_SCALE=2
@@ -33,7 +38,8 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-set $menu wmenu-run
+## This solves the issue with wmenu not finding cursor
+set $menu env PATH="$HOME/.local/bin:$PATH" wmenu-run
 
 ### Appearance
 # Border colors (grey theme)
