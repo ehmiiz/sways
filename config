@@ -11,24 +11,6 @@ exec_always {
     
     # PATH configuration
     export PATH="$HOME/.local/bin:$PATH"
-    
-    # High-DPI and scaling fixes
-    export GDK_SCALE=2
-    export GDK_DPI_SCALE=0.5
-    export QT_AUTO_SCREEN_SCALE_FACTOR=1
-    export QT_SCALE_FACTOR=2
-    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-    export XCURSOR_SIZE=32
-    
-    # Force Wayland for supported applications
-    export MOZ_ENABLE_WAYLAND=1
-    export ELECTRON_OZONE_PLATFORM_HINT=wayland
-    
-    # XWayland scaling
-    export GDK_BACKEND=wayland,x11
-    export QT_QPA_PLATFORM=wayland;xcb
-    export SDL_VIDEODRIVER=wayland
-    export CLUTTER_BACKEND=wayland
 }
 
 ### Variables
@@ -78,33 +60,21 @@ input "2821:6802:ASUSTeK_ROG_HARPE_ACE_AIM_LAB_EDITION" {
 # Default wallpaper
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
-# Dell U2724D 27" Monitor Configuration (Primary when connected)
-output "DP-9" {
-    mode 2560x1440@120Hz
-    scale 1
-    position 0,0
-}
+# Mission SG 27" Monitor - try common output configurations
+# External monitors will be detected and configured by monitor-manager.sh
 
 # Framework 13 laptop display configuration
 output "eDP-1" {
     mode 2880x1920@120Hz
     scale 2
-    position 0,0
+    position 0 0
 }
 
 # High-DPI scaling for any other displays
 output "AU Optronics 0x1B9E Unknown" scale 2
 
-# Monitor management: Disable laptop screen when external monitor is connected
-exec_always {
-    # Check if external monitor is connected and manage displays accordingly
-    if swaymsg -t get_outputs | jq -e '.[] | select(.name == "DP-9" and .active == true)' > /dev/null 2>&1; then
-        swaymsg output eDP-1 enable
-        swaymsg output DP-9 enable
-    else
-        swaymsg output eDP-1 enable
-    fi
-}
+# Simple monitor hotplug handling
+exec_always ~/git/sway-stuff/monitor-manager.sh
 
 ### Status Bar
 bar {
@@ -195,7 +165,7 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Nautilus on ctrl + e
-bindsym $mod+e exec nautilus
+bindsym $mod+e exec env GDK_SCALE=2 GDK_DPI_SCALE=0.5 nautilus
 
 # Resize mode
 mode "resize" {
@@ -229,9 +199,14 @@ bindsym $mod+Print exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +"%Y-%m-
 bindsym Ctrl+Shift+b exec grim -g "$(slurp)" - | swappy -f -
 bindsym Ctrl+Print exec grim - | wl-copy
 
-# Image viewer shortcuts
-bindsym $mod+i exec imv ~/Pictures/
-bindsym $mod+Shift+i exec $term -e sh -c 'ls -la ~/Pictures/*.png 2>/dev/null || echo "No screenshots found in ~/Pictures/"; read -p "Press Enter to continue..."'
+# Cursor shortcut
+bindsym $mod+Shift+i exec /home/ehmiiz/.local/bin/cursor
+
+# Firefox shortcut
+bindsym $mod+Shift+b exec /usr/sbin/firefox
+
+# Obsidian shortcut
+bindsym $mod+Shift+n exec flatpak run md.obsidian.Obsidian
 
 ### Idle Management
 # Start swayidle with proper instance management
