@@ -208,6 +208,9 @@ bindsym $mod+Shift+b exec /usr/sbin/firefox
 # Obsidian shortcut
 bindsym $mod+Shift+n exec flatpak run md.obsidian.Obsidian
 
+# Calibre shortcut with proper scaling
+bindsym $mod+Shift+p exec ~/git/sway-stuff/launch-calibre.sh
+
 ### Idle Management
 # Start swayidle with proper instance management
 exec_always ~/git/sway-stuff/start_swayidle.sh
