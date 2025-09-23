@@ -24,10 +24,18 @@ if [ -n "$EXTERNAL_OUTPUTS" ]; then
     # Configure each external output (TV)
     for output in $EXTERNAL_OUTPUTS; do
         echo "Configuring $output for TV display"
-        # Try common TV resolutions - prioritize 4K, then 1080p
-        swaymsg output "$output" mode 3840x2160@60Hz scale 1 position 0 0 || \
-        swaymsg output "$output" mode 1920x1080@60Hz scale 1 position 0 0 || \
-        swaymsg output "$output" mode 1920x1080@30Hz scale 1 position 0 0
+        
+        # Check if this is the specific MF27165QHD monitor for 120Hz
+        MONITOR_MODEL=$(swaymsg -t get_outputs | jq -r ".[] | select(.name == \"$output\") | .model")
+        if [ "$MONITOR_MODEL" = "MF27165QHD" ]; then
+            echo "Detected MF27165QHD monitor - configuring for 120Hz"
+            swaymsg output "$output" mode 2560x1440@120Hz scale 1 position 0 0
+        else
+            # Try common TV resolutions - prioritize 4K, then 1080p
+            swaymsg output "$output" mode 3840x2160@60Hz scale 1 position 0 0 || \
+            swaymsg output "$output" mode 1920x1080@60Hz scale 1 position 0 0 || \
+            swaymsg output "$output" mode 1920x1080@30Hz scale 1 position 0 0
+        fi
         
         # Set TV as primary workspace target
         swaymsg workspace 1
